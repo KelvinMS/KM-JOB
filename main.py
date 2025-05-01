@@ -1,27 +1,82 @@
 import customtkinter as ctk
+from pprint import pprint
+from tabs.orcamentos_widgets import OrcamentosWidgets
+
+
+
+
+class NotebookTabView(ctk.CTkTabview):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        
+        
+        # create tabs
+        self.add("Orçamento")
+        self.add("Clientes")
+        self.add("Relatórios")
+        self.add("Materiais")
+        self.add("Registros Freelancer")
+        self.set("Orçamento")  # set currently visible tab
+
 
 
 
 class Application(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.root = ctk.CTk()
+        self.frames = {}
         self.mainPage()
-        self.root.mainloop()
+        self.createWidgets()
+        self.mainloop()
 
         
+    #Creates the main page of the application and notebook tabs
     def mainPage(self):
         ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
         ctk.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-        self.root.title('KMJob - Management System')
-        self.root.iconbitmap('images\\icon.ico')
-        self.root.configure(background='RoyalBlue4')
-        self.root.geometry('1200x720')
-        self.root.resizable(True,True)
-        self.root.minsize(width=1200,height=720)
+        self.title('KMJob - Management System')
+        self.iconbitmap('images\\icon.ico')
+        self.configure(background='RoyalBlue4')
+        self.geometry('1200x720')
+        self.resizable(True,True)
+        self.minsize(width=1200,height=720)
 
 
 
 
+    def createWidgets(self):
+        
+        self.tab_view = NotebookTabView(master=self, corner_radius=10,command=self.on_tab_change)
+        self.tab_view.grid(row=0, column=0, padx=5, pady=15,sticky="nsew")
 
-Application()
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        # Create the tabs and their widgets
+        self.widgets_orcamento = OrcamentosWidgets(master=self.tab_view.tab("Orçamento"))
+        self.widgets_orcamento.grid(row=0, column=0, sticky="nsew")
+
+
+
+        #createWidgetsClientes()
+        # self.createWidgetsRelatorios()
+        # self.createWidgetsMateriais()
+        # self.createWidgetsRegistrosFreelancer()
+
+
+
+    def on_tab_change(self):
+        print(f"\n\nTab changed to: {self.tab_view.get()}")
+        self.frames = self.widgets_orcamento.get_frames()
+
+        pprint(f"\nFrames: {self.widgets_orcamento.get_frames()}")
+        if self.tab_view.get() == "Orçamento":
+            print("Orcamentos tab selected")
+            if "frame_entrys_orcamentos" in self.frames:
+                print("Frame das Entrys do Orcamentos Existe")
+                self.frames["frame_entrys_orcamentos"].destroy()
+
+
+
+if __name__ == "__main__":
+    Application()
