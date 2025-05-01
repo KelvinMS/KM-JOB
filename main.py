@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from pprint import pprint
+from tkinter import ttk, messagebox
 from tabs.orcamentos_widgets import OrcamentosWidgets
 
 
@@ -49,12 +50,13 @@ class Application(ctk.CTk):
         
         self.tab_view = NotebookTabView(master=self, corner_radius=10,command=self.on_tab_change)
         self.tab_view.grid(row=0, column=0, padx=5, pady=15,sticky="nsew")
-
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+
         # Create the tabs and their widgets
         self.widgets_orcamento = OrcamentosWidgets(master=self.tab_view.tab("Orçamento"))
         self.widgets_orcamento.grid(row=0, column=0, sticky="nsew")
+        #self.treeView_table = ttk.Treeview(self, height=1,columns=('col1','col2','col3','col4','col5','col6','col7','col8','col9','col10'),show='headings')
 
 
 
