@@ -39,7 +39,7 @@ class Application(ctk.CTk):
         self.title('KMJob - Management System')
         self.iconbitmap('images\\icon.ico')
         self.configure(background='RoyalBlue4')
-        self.geometry('1200x720')
+        self.geometry('1200x820')
         self.resizable(True,True)
         self.minsize(width=1200,height=720)
 
@@ -53,9 +53,13 @@ class Application(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+
         # Create the tabs and their widgets
         self.widgets_orcamento = OrcamentosWidgets(master=self.tab_view.tab("Orçamento"))
         self.widgets_orcamento.grid(row=0, column=0, sticky="nsew")
+        self.widgets_orcamento.columnconfigure(0, weight=1)
+        self.widgets_orcamento.columnconfigure(1, weight=1)
+        self.widgets_orcamento.columnconfigure(2, weight=1)
         #self.treeView_table = ttk.Treeview(self, height=1,columns=('col1','col2','col3','col4','col5','col6','col7','col8','col9','col10'),show='headings')
 
 
@@ -74,9 +78,10 @@ class Application(ctk.CTk):
         pprint(f"\nFrames: {self.widgets_orcamento.get_frames()}")
         if self.tab_view.get() == "Orçamento":
             print("Orcamentos tab selected")
-            if "frame_entrys_orcamentos" in self.frames:
+            if "frame_vehicle_data_entrys" in self.frames:
                 print("Frame das Entrys do Orcamentos Existe")
-                self.frames["frame_entrys_orcamentos"].destroy()
+                self.frames["frame_vehicle_data_entrys"].destroy()
+                self.frames["frame_client_data_entrys"].destroy()
 
 
 
