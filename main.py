@@ -39,9 +39,12 @@ class Application(ctk.CTk):
         self.title('KMJob - Management System')
         self.iconbitmap('images\\icon.ico')
         self.configure(background='RoyalBlue4')
-        self.geometry('1200x820')
+        #self.geometry('1200x820')
         self.resizable(True,True)
         self.minsize(width=1200,height=720)
+        largura = self.winfo_screenwidth()
+        altura = self.winfo_screenheight()
+        self.geometry(f"{largura}x{altura}+0+0")
 
 
 
