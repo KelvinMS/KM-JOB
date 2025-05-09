@@ -78,11 +78,10 @@ class Application(ctk.CTk):
         print(f"\n\nTab changed to: {self.tab_view.get()}")
         self.frames = self.widgets_orcamento.get_frames()
 
-        pprint(f"\nFrames: {self.widgets_orcamento.get_frames()}")
         if self.tab_view.get() == "Orçamento":
             print("Orcamentos tab selected")
             if "frame_vehicle_data_entrys" in self.frames:
-                print("Frame das Entrys do Orcamentos Existe")
+                print("Frames: {self.frames}")
                 self.frames["frame_vehicle_data_entrys"].destroy()
                 self.frames["frame_client_data_entrys"].destroy()
 
