@@ -1,6 +1,7 @@
 from math import e
 import customtkinter as ctk
 from tkinter import ttk, messagebox
+from tabs.teste import TelaConsultaOrcamentos
 
 
 
@@ -15,7 +16,8 @@ class OrcamentosWidgets(ctk.CTkFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_action_buttons_orcamento()
-        #self.frame_vehicle_data_entries()
+        
+
 
 
     # Criar a seção de botões de ação para o orçamento
@@ -25,23 +27,31 @@ class OrcamentosWidgets(ctk.CTkFrame):
 
         botoes = [
             ("Criar Orçamento",self.create_widgets_orcamento),
-            ("Consultar Orçamento",self.clean_all_entrys),
+            ("Consultar Orçamento",self.create_widgets_consultar_orcamento),
             ("Botao de teste",self.get_all_entrys),
             ("Excluir Orçamento",lambda: print("Excluir Orçamento Clicked")),
             
         ]
-
+        
+        
         for i, (texto,funcao) in enumerate(botoes):
             ctk.CTkButton(master=self.frames["frame_botoes_acao_orcamentos"], text=texto, width=120, anchor='w',command=funcao)\
                 .grid(row=i, column=0, padx=5, pady=5, sticky="ew")
 
+    def create_widgets_consultar_orcamento(self):
+        self.widgets_orcamento = TelaConsultaOrcamentos(master=self,frames=self.frames)
+        self.widgets_orcamento.grid(row=0, column=1, sticky="nsew")
 
     # Métodos para criar um orçamento
     def create_widgets_orcamento(self):
+        print("Frames existentes CREATE WIDGETS Criar Orcamento:", self.frames.keys()) 
+        self.limpar_frames_dinamicos()
+        #self.forget_specific_frames()
+        
         # Implementar a lógica para criar um orçamento
         self.frame_vehicle_data_entries()
-        self.frame_client_data_entrys()
-        self.frame_payment_data_entrys()
+        self.frame_client_data_entries()
+        self.frame_payment_data_entries()
         ctk.CTkButton(master=self, text="Salvar Orçamento", width=200,height=50, anchor='center',command=self.get_all_entrys)\
             .grid(row=1, column=1, padx=5, pady=5, sticky="ew",columnspan=3,rowspan=2)
 
@@ -123,38 +133,38 @@ class OrcamentosWidgets(ctk.CTkFrame):
 
 
     # Criar a seção de entradas a selecao ou criacao de cliente na criacao de orçamento
-    def frame_client_data_entrys(self):
+    def frame_client_data_entries(self):
 
-        self.frames["frame_client_data_entrys"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
-        self.frames["frame_client_data_entrys"].grid(row=0, column=2, padx=5, pady=5, sticky="nwe")
+        self.frames["frame_client_data_entries"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
+        self.frames["frame_client_data_entries"].grid(row=0, column=2, padx=5, pady=5, sticky="nwe")
         self.widgets_responsible_client_data()
 
 
     # Criar a seção de entradas para selecionar um cliente existente ou criar um novo cliente na criacao de orçamento
     def widgets_responsible_client_data(self):
-        lbl_info_driver = ctk.CTkLabel(master=self.frames["frame_client_data_entrys"], text="Responsável Financeiro", font=("Arial", 16),text_color="DimGrey",anchor="center")
+        lbl_info_driver = ctk.CTkLabel(master=self.frames["frame_client_data_entries"], text="Responsável Financeiro", font=("Arial", 16),text_color="DimGrey",anchor="center")
         lbl_info_driver.grid(row=0, column=0, padx=10, pady=5, columnspan=2)
         lbl_info_driver.rowconfigure(0, weight=1)
         
         # Adiciona os Comboboxes para selecionar um cliente existente
         clientes = ["Cliente 1", "Cliente 2", "Cliente 3"]
-        ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
-        ctk.CTkLabel(master=self.frames["frame_client_data_entrys"], text="Selecionar Cliente:")\
+        ultima_linha = self.get_last_row(self.frames["frame_client_data_entries"])
+        ctk.CTkLabel(master=self.frames["frame_client_data_entries"], text="Selecionar Cliente:")\
             .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="e")
-        self.combo_clientes = ctk.CTkComboBox(master=self.frames["frame_client_data_entrys"], values=clientes, width=200)
+        self.combo_clientes = ctk.CTkComboBox(master=self.frames["frame_client_data_entries"], values=clientes, width=200)
         self.combo_clientes.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
         self.combo_clientes.set("Selecione um cliente") 
 
         # Checkbox para novo cliente
-        ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
+        ultima_linha = self.get_last_row(self.frames["frame_client_data_entries"])
 
         self.novo_cliente_var = ctk.BooleanVar(value=False)
-        self.checkbox_novo_cliente = ctk.CTkCheckBox(self.frames["frame_client_data_entrys"], text="Cadastrar novo cliente", variable=self.novo_cliente_var,command=self.widgets_new_client_data_entrys)
+        self.checkbox_novo_cliente = ctk.CTkCheckBox(self.frames["frame_client_data_entries"], text="Cadastrar novo cliente", variable=self.novo_cliente_var,command=self.widgets_new_client_data_entrys)
         self.checkbox_novo_cliente.grid(row=ultima_linha, column=0, padx=10, pady=5)
 
         # divider entre os widgets
-        ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
-        divider = ctk.CTkFrame(self.frames["frame_client_data_entrys"], height=2, fg_color="DarkSlateGray")
+        ultima_linha = self.get_last_row(self.frames["frame_client_data_entries"])
+        divider = ctk.CTkFrame(self.frames["frame_client_data_entries"], height=2, fg_color="DarkSlateGray")
         divider.grid(row=ultima_linha, column=0, sticky="ew", pady=5,padx=(5,5),columnspan=2)
 
     # Criar a seção de entradas para um novo cliente no orçamento
@@ -172,8 +182,8 @@ class OrcamentosWidgets(ctk.CTkFrame):
                 ("Telefone", "entry_phone"),
                 ("Email", "entry_email")
             ]
-            ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
-            self.frames['frame_add_new_client'] = ctk.CTkFrame(self.frames["frame_client_data_entrys"], width=300, height=300, fg_color="transparent")
+            ultima_linha = self.get_last_row(self.frames["frame_client_data_entries"])
+            self.frames['frame_add_new_client'] = ctk.CTkFrame(self.frames["frame_client_data_entries"], width=300, height=300, fg_color="transparent")
             self.frames['frame_add_new_client'].grid(row=ultima_linha, column=0, sticky="new",columnspan=2)
             
             self.frames['frame_add_new_client'].grid_rowconfigure(0, weight=1)
@@ -189,7 +199,7 @@ class OrcamentosWidgets(ctk.CTkFrame):
                 self.entry_novo_cliente_var[entry_name] = var
 
             # Última linha para textbox de descrição
-            ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
+            ultima_linha = self.get_last_row(self.frames["frame_client_data_entries"])
             ctk.CTkLabel(master=self.frames['frame_add_new_client'] , text="Descrição:")\
                 .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="ne")
             self.txtbox_new_client_descrition = ctk.CTkTextbox(master=self.frames['frame_add_new_client'] , width=200, height=100)
@@ -197,9 +207,9 @@ class OrcamentosWidgets(ctk.CTkFrame):
             
 
 
-    def frame_payment_data_entrys(self):
-        self.frames["frame_payment_data"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
-        self.frames["frame_payment_data"].grid(row=0, column=3, padx=5, pady=5, sticky="nwe")
+    def frame_payment_data_entries(self):
+        self.frames["frame_payment_data_entries"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
+        self.frames["frame_payment_data_entries"].grid(row=0, column=3, padx=5, pady=5, sticky="nwe")
         self.widgets_payment_data()
 
     
@@ -212,44 +222,44 @@ class OrcamentosWidgets(ctk.CTkFrame):
         var_payment_parcel = ctk.StringVar()
 
 
-        lbl_info_payment = ctk.CTkLabel(master=self.frames["frame_payment_data"], text="Dados de Pagamento", font=("Arial", 16),text_color="DimGrey",anchor="center")
+        lbl_info_payment = ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text="Dados de Pagamento", font=("Arial", 16),text_color="DimGrey",anchor="center")
         lbl_info_payment.grid(row=0, column=0, padx=10, pady=5, columnspan=2)
         lbl_info_payment.rowconfigure(0, weight=1)
 
         # Entry para o valor de entrada
-        ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Valor de Entrada:')\
+        ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text='Valor de Entrada:')\
                 .grid(row=1, column=0, padx=10, pady=5, sticky="e")
-        ctk.CTkEntry(master=self.frames["frame_payment_data"], width=200, placeholder_text='Valor Total',textvariable=var_valor_entrada)\
+        ctk.CTkEntry(master=self.frames["frame_payment_data_entries"], width=200, placeholder_text='Valor Total',textvariable=var_valor_entrada)\
                 .grid(row=1, column=1, padx=10, pady=5, sticky="ew")
         self.entry_payments_var['entry_valor_entrada'] = var_valor_entrada
 
         # Entry para o valor total
-        ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Valor Total:')\
+        ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text='Valor Total:')\
             .grid(row=2, column=0, padx=10, pady=5, sticky="e")
-        ctk.CTkEntry(master=self.frames["frame_payment_data"], width=200, placeholder_text='Valor Total',textvariable=var_valor_total)\
+        ctk.CTkEntry(master=self.frames["frame_payment_data_entries"], width=200, placeholder_text='Valor Total',textvariable=var_valor_total)\
             .grid(row=2, column=1, padx=10, pady=5, sticky="ew")
         self.entry_payments_var['entry_valor_total'] = var_valor_total
         
         # Combo box para selecionar o método de pagamento
-        ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Método de Pagamento')\
+        ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text='Método de Pagamento')\
             .grid(row=3, column=0, padx=10, pady=5, sticky="e")
-        self.btn_payment_method = ctk.CTkSegmentedButton(master=self.frames["frame_payment_data"], values=["Pix", "Débito", "Crédito", "Dinheiro"],variable=var_payment_method)\
+        self.btn_payment_method = ctk.CTkSegmentedButton(master=self.frames["frame_payment_data_entries"], values=["Pix", "Débito", "Crédito", "Dinheiro"],variable=var_payment_method)\
             .grid(row=3, column=1, padx=10, pady=5, sticky="ew")
         self.entry_payments_var['entry_metodo_pagamento'] = var_payment_method
         
         # Combo box para selecionar parcelamento
-        ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Parcelamento')\
+        ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text='Parcelamento')\
                 .grid(row=4, column=0, padx=10, pady=5, sticky="e")
-        self.combo_payment_method = ctk.CTkComboBox(master=self.frames["frame_payment_data"], values=parcelamento, variable=var_payment_parcel)
+        self.combo_payment_method = ctk.CTkComboBox(master=self.frames["frame_payment_data_entries"], values=parcelamento, variable=var_payment_parcel)
         self.combo_payment_method.grid(row=4, column=1, padx=10, pady=5, sticky="w")
         self.combo_payment_method.set("Nº de Parcelas")
         self.entry_payments_var['entry_parcelamento'] = var_payment_parcel
         
         # Última linha para textbox de descrição
-        ultima_linha = self.get_last_row(self.frames["frame_payment_data"])
-        ctk.CTkLabel(master=self.frames["frame_payment_data"], text="Descrição:")\
+        ultima_linha = self.get_last_row(self.frames["frame_payment_data_entries"])
+        ctk.CTkLabel(master=self.frames["frame_payment_data_entries"], text="Descrição:")\
             .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="nw")
-        self.txtbox_payment_description = ctk.CTkTextbox(master=self.frames["frame_payment_data"], width=200, height=100)
+        self.txtbox_payment_description = ctk.CTkTextbox(master=self.frames["frame_payment_data_entries"], width=200, height=100)
         self.txtbox_payment_description.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
 
         
@@ -276,7 +286,9 @@ class OrcamentosWidgets(ctk.CTkFrame):
     def forget_specific_frames(self):
         print("Esquecendo frames específicos")
         self.frames["frame_vehicle_data_entries"].destroy()
-        self.frames["frame_client_data_entrys"].destroy()
+        self.frames["frame_client_data_entries"].destroy()
+        self.frames["frame_choose_body_part"].destroy()
+        
         super().forget()
 
     # Método para obter todos os valores dos Entry
@@ -351,3 +363,14 @@ class OrcamentosWidgets(ctk.CTkFrame):
         else:
             print("Todos os campos foram preenchidos corretamente.")
             return True
+        
+    def limpar_frames_dinamicos(self):
+        print(f"\n\n*********Limpeza de framedinamicos*********")
+        for nome, frame in self.frames.items():
+            
+            print(f"\n\n\nFrames existentes: {self.frames.keys()}")
+            if nome != "frame_botoes_acao_orcamentos":
+                print(f"Destruindo frame: {nome}\n")  
+                frame.destroy()
+                super().forget()
+        self.frames = {"frame_botoes_acao_orcamentos": self.frames["frame_botoes_acao_orcamentos"]}

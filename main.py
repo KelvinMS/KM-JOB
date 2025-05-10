@@ -72,7 +72,7 @@ class Application(ctk.CTk):
         # self.createWidgetsMateriais()
         # self.createWidgetsRegistrosFreelancer()
 
-
+    
 
     def on_tab_change(self):
         print(f"\n\nTab changed to: {self.tab_view.get()}")
