@@ -42,6 +42,8 @@ class OrcamentosWidgets(ctk.CTkFrame):
         self.frame_vehicle_data_entrys()
         self.frame_client_data_entrys()
         self.frame_payment_data_entrys()
+        ctk.CTkButton(master=self, text="Salvar Orçamento", width=200,height=50, anchor='center',command=self.get_all_entrys)\
+            .grid(row=1, column=1, padx=5, pady=5, sticky="ew",columnspan=3,rowspan=2)
 
     # Criar o Frame para as entradas de dados do veículo e chamar o método de widgets
     def frame_vehicle_data_entrys(self):
@@ -81,8 +83,8 @@ class OrcamentosWidgets(ctk.CTkFrame):
         ultima_linha = self.get_last_row(self.frames["frame_vehicle_data_entrys"])
         ctk.CTkLabel(master=self.frames["frame_vehicle_data_entrys"], text="Descrição:")\
             .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="nw")
-        descricao = ctk.CTkTextbox(master=self.frames["frame_vehicle_data_entrys"], width=200, height=100)
-        descricao.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
+        self.txtbox_vehicle_descrition = ctk.CTkTextbox(master=self.frames["frame_vehicle_data_entrys"], width=200, height=100)
+        self.txtbox_vehicle_descrition.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
 
     
     # Criar a seção de entradas para as partes do veículo na criacao de orçamento
@@ -190,8 +192,9 @@ class OrcamentosWidgets(ctk.CTkFrame):
             ultima_linha = self.get_last_row(self.frames["frame_client_data_entrys"])
             ctk.CTkLabel(master=self.frames['frame_add_new_client'] , text="Descrição:")\
                 .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="ne")
-            descricao = ctk.CTkTextbox(master=self.frames['frame_add_new_client'] , width=200, height=100)
-            descricao.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
+            self.txtbox_new_client_descrition = ctk.CTkTextbox(master=self.frames['frame_add_new_client'] , width=200, height=100)
+            self.txtbox_new_client_descrition.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
+            
 
 
     def frame_payment_data_entrys(self):
@@ -222,17 +225,16 @@ class OrcamentosWidgets(ctk.CTkFrame):
 
         # Entry para o valor total
         ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Valor Total:')\
-                .grid(row=2, column=0, padx=10, pady=5, sticky="e")
+            .grid(row=2, column=0, padx=10, pady=5, sticky="e")
         ctk.CTkEntry(master=self.frames["frame_payment_data"], width=200, placeholder_text='Valor Total',textvariable=var_valor_total)\
-                .grid(row=2, column=1, padx=10, pady=5, sticky="ew")
+            .grid(row=2, column=1, padx=10, pady=5, sticky="ew")
         self.entry_payments_var['entry_valor_total'] = var_valor_total
         
         # Combo box para selecionar o método de pagamento
         ctk.CTkLabel(master=self.frames["frame_payment_data"], text='Método de Pagamento')\
-                .grid(row=3, column=0, padx=10, pady=5, sticky="e")
-        self.combo_payment_method = ctk.CTkComboBox(master=self.frames["frame_payment_data"], values=['Pix','Débito','Crédito','Dinheiro'], width=200, variable=var_payment_method)
-        self.combo_payment_method.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
-        self.combo_payment_method.set("Selecionar método de pagamento")
+            .grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        self.btn_payment_method = ctk.CTkSegmentedButton(master=self.frames["frame_payment_data"], values=["Pix", "Débito", "Crédito", "Dinheiro"],variable=var_payment_method)\
+            .grid(row=3, column=1, padx=10, pady=5, sticky="ew")
         self.entry_payments_var['entry_metodo_pagamento'] = var_payment_method
         
         # Combo box para selecionar parcelamento
@@ -243,13 +245,12 @@ class OrcamentosWidgets(ctk.CTkFrame):
         self.combo_payment_method.set("Nº de Parcelas")
         self.entry_payments_var['entry_parcelamento'] = var_payment_parcel
         
-        
         # Última linha para textbox de descrição
         ultima_linha = self.get_last_row(self.frames["frame_payment_data"])
         ctk.CTkLabel(master=self.frames["frame_payment_data"], text="Descrição:")\
             .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="nw")
-        self.txtbox_description_payment = ctk.CTkTextbox(master=self.frames["frame_payment_data"], width=200, height=100)
-        self.txtbox_description_payment.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
+        self.txtbox_payment_description = ctk.CTkTextbox(master=self.frames["frame_payment_data"], width=200, height=100)
+        self.txtbox_payment_description.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
 
         
 
@@ -283,26 +284,32 @@ class OrcamentosWidgets(ctk.CTkFrame):
         # Retorna todos os valores dos Entry
         print("\n\nValores dos Entry:")
         print("\n=============Dados do carro=============\n")
+        self.entry_carinfo_vars['vehicle_description'] = self.txtbox_vehicle_descrition.get("0.0", "end")
         for key, var in self.entry_carinfo_vars.items():
-            print(f"{key}: {var.get()}")    
+            if key != 'vehicle_description':
+                print(f"{key}: {var.get()}")
+            else:
+                print(f"{key}: {self.entry_carinfo_vars['vehicle_description']}")
         print("=============Partes do carro a trabalhar=============")
         for key, var in self.checkbox_car_parts_vars.items():
             print(f"{key}: {var.get()}") 
         print("=============Dados de pagamento=============")
-        self.entry_payments_var['payment_description'] = self.txtbox_description_payment.get("0.0", "end")
+        self.entry_payments_var['payment_description'] = self.txtbox_payment_description.get("0.0", "end")
         for key, var in self.entry_payments_var.items():
             if key != 'payment_description':
                 print(f"{key}: {var.get()}")
             else:
                 print(f"{key}: {self.entry_payments_var['payment_description']}")
         if self.novo_cliente_var.get():
-            print("\n\n****Novo cliente selecionado")
-            print("=============Partes do carro a trabalhar=============")
-
+            self.entry_novo_cliente_var['new_client_description'] = self.txtbox_new_client_descrition.get("0.0", "end")
             for key, var in self.entry_novo_cliente_var.items():
-                print(f"{key}: {var.get()}")
-
-
+                if key != 'new_client_description':
+                    print(f"{key}: {var.get()}")
+                else:
+                    print(f"{key}: {self.entry_novo_cliente_var['new_client_description']}")
+        print("=========================================")
+        self.validate_all_entrys()
+   
     # Método para limpar todos os Entry
     def clean_all_entrys(self):
         # Limpa todos os valores dos Entry
@@ -314,3 +321,33 @@ class OrcamentosWidgets(ctk.CTkFrame):
             for key, var in self.entry_novo_cliente_var.items():
                 var.set("")
         
+    # Método para validar todos os Entry
+    def validate_all_entrys(self):
+        errors = []
+
+        # Valida os campos de dados do carro
+        for key, var in self.entry_carinfo_vars.items():
+            if key != 'vehicle_description' and not var.get().strip():
+                errors.append(f"Campo '{key}' não preenchido.")
+
+        # Valida os campos de pagamento
+        for key, var in self.entry_payments_var.items():
+            if key != 'payment_description' and not var.get().strip():
+                errors.append(f"Campo de pagamento '{key}' não preenchido.")
+
+        # Valida os campos de novo cliente, se selecionado
+        if self.novo_cliente_var.get():
+            for key, var in self.entry_novo_cliente_var.items():
+                if key != 'new_client_description' and not var.get().strip():
+                    errors.append(f"Dados do novo cliente '{key}' não preenchido.")
+
+        # Exibe os erros ou retorna True se tudo estiver válido
+        if errors:
+            print("\nErros encontrados:")
+            for error in errors:
+                print(f"- {error}")
+            messagebox.showerror("Erro de Validação", "\n".join(errors))
+            return False
+        else:
+            print("Todos os campos foram preenchidos corretamente.")
+            return True
