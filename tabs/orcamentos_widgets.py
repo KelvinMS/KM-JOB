@@ -15,7 +15,7 @@ class OrcamentosWidgets(ctk.CTkFrame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_action_buttons_orcamento()
-        #self.frame_vehicle_data_entrys()
+        #self.frame_vehicle_data_entries()
 
 
     # Criar a seção de botões de ação para o orçamento
@@ -39,23 +39,23 @@ class OrcamentosWidgets(ctk.CTkFrame):
     # Métodos para criar um orçamento
     def create_widgets_orcamento(self):
         # Implementar a lógica para criar um orçamento
-        self.frame_vehicle_data_entrys()
+        self.frame_vehicle_data_entries()
         self.frame_client_data_entrys()
         self.frame_payment_data_entrys()
         ctk.CTkButton(master=self, text="Salvar Orçamento", width=200,height=50, anchor='center',command=self.get_all_entrys)\
             .grid(row=1, column=1, padx=5, pady=5, sticky="ew",columnspan=3,rowspan=2)
 
     # Criar o Frame para as entradas de dados do veículo e chamar o método de widgets
-    def frame_vehicle_data_entrys(self):
-        self.frames["frame_vehicle_data_entrys"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
-        self.frames["frame_vehicle_data_entrys"].grid(row=0, column=1, padx=5, pady=5, sticky="nwe")
+    def frame_vehicle_data_entries(self):
+        self.frames["frame_vehicle_data_entries"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
+        self.frames["frame_vehicle_data_entries"].grid(row=0, column=1, padx=5, pady=5, sticky="nwe")
         self.widgets_vehicle_orcamento()
         
 
     # Criar os widgets de entradas para os dados do veículo na criação de orçamento
     def widgets_vehicle_orcamento(self):
 
-        cliente_data_entrys = [
+        vehicle_data_entrys = [
 
             ("Nome do Veículo", "entry_nome_veiculo"),
             ("Fabricante", "entry_fabricante_veiculo"),
@@ -64,26 +64,26 @@ class OrcamentosWidgets(ctk.CTkFrame):
             ("Ano do Veículo", "entry_ano")
         ]
 
-        lbl_info_veiculo = ctk.CTkLabel(master=self.frames["frame_vehicle_data_entrys"], text="Informações do Veículo", font=("Arial", 16),text_color="DimGrey",anchor="center")
+        lbl_info_veiculo = ctk.CTkLabel(master=self.frames["frame_vehicle_data_entries"], text="Informações do Veículo", font=("Arial", 16),text_color="DimGrey",anchor="center")
         lbl_info_veiculo.grid(row=0, column=0, padx=10, pady=5, columnspan=2)
         lbl_info_veiculo.rowconfigure(0, weight=1)
 
         # Adiciona os labels e entries para cada item na lista cliente_data_entrys
-        for i, (label_text, entry_name) in enumerate(cliente_data_entrys):
+        for i, (label_text, entry_name) in enumerate(vehicle_data_entrys):
             var = ctk.StringVar()
-            ctk.CTkLabel(master=self.frames["frame_vehicle_data_entrys"], text=label_text + ":")\
+            ctk.CTkLabel(master=self.frames["frame_vehicle_data_entries"], text=label_text + ":")\
                 .grid(row=i+1, column=0, padx=10, pady=5, sticky="e")
-            entry = ctk.CTkEntry(master=self.frames["frame_vehicle_data_entrys"], width=200, placeholder_text=label_text,textvariable=var)
+            entry = ctk.CTkEntry(master=self.frames["frame_vehicle_data_entries"], width=200, placeholder_text=label_text,textvariable=var)
             entry.grid(row=i+1, column=1, padx=10, pady=5, sticky="ew")
             self.entry_carinfo_vars[entry_name] = var
                     
         self.widgets_car_parts_data()
 
         # Última linha para textbox de descrição
-        ultima_linha = self.get_last_row(self.frames["frame_vehicle_data_entrys"])
-        ctk.CTkLabel(master=self.frames["frame_vehicle_data_entrys"], text="Descrição:")\
+        ultima_linha = self.get_last_row(self.frames["frame_vehicle_data_entries"])
+        ctk.CTkLabel(master=self.frames["frame_vehicle_data_entries"], text="Descrição:")\
             .grid(row=ultima_linha, column=0, padx=10, pady=5, sticky="nw")
-        self.txtbox_vehicle_descrition = ctk.CTkTextbox(master=self.frames["frame_vehicle_data_entrys"], width=200, height=100)
+        self.txtbox_vehicle_descrition = ctk.CTkTextbox(master=self.frames["frame_vehicle_data_entries"], width=200, height=100)
         self.txtbox_vehicle_descrition.grid(row=ultima_linha, column=1, padx=10, pady=5, sticky="ew")
 
     
@@ -105,8 +105,8 @@ class OrcamentosWidgets(ctk.CTkFrame):
             "Teto"
         ]
 
-        ultima_linha = self.get_last_row(self.frames["frame_vehicle_data_entrys"])
-        self.frames['frame_choose_body_part'] = ctk.CTkFrame(self.frames["frame_vehicle_data_entrys"], width=300, height=300, fg_color="transparent")
+        ultima_linha = self.get_last_row(self.frames["frame_vehicle_data_entries"])
+        self.frames['frame_choose_body_part'] = ctk.CTkFrame(self.frames["frame_vehicle_data_entries"], width=300, height=300, fg_color="transparent")
         self.frames['frame_choose_body_part'].grid(row=ultima_linha, column=0, sticky="new",columnspan=2)
         self.frames['frame_choose_body_part'].grid_rowconfigure(0, weight=1)
 
@@ -275,7 +275,7 @@ class OrcamentosWidgets(ctk.CTkFrame):
     # Método para esquecer os frames específicos
     def forget_specific_frames(self):
         print("Esquecendo frames específicos")
-        self.frames["frame_vehicle_data_entrys"].destroy()
+        self.frames["frame_vehicle_data_entries"].destroy()
         self.frames["frame_client_data_entrys"].destroy()
         super().forget()
 
