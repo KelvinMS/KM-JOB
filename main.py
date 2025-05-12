@@ -5,7 +5,6 @@ from tabs.orcamentos_widgets import OrcamentosWidgets
 
 
 
-
 class NotebookTabView(ctk.CTkTabview):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -19,8 +18,7 @@ class NotebookTabView(ctk.CTkTabview):
         self.add("Materiais")
         self.add("Registros Freelancer")
         self.set("Orçamento")  # set currently visible tab
-
-
+        self.configure(corner_radius=10)
 
 
 class Application(ctk.CTk):
@@ -51,7 +49,7 @@ class Application(ctk.CTk):
 
     def createWidgets(self):
         
-        self.tab_view = NotebookTabView(master=self, corner_radius=10,command=self.on_tab_change)
+        self.tab_view = NotebookTabView(master=self,command=self.on_tab_change)
         self.tab_view.grid(row=0, column=0, padx=5, pady=15,sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -77,13 +75,22 @@ class Application(ctk.CTk):
     def on_tab_change(self):
         print(f"\n\nTab changed to: {self.tab_view.get()}")
         self.frames = self.widgets_orcamento.get_frames()
-
+        print('\nFrames:')
+        pprint(self.frames)
         if self.tab_view.get() == "Orçamento":
-            print("Orcamentos tab selected")
-            if "frame_vehicle_data_entrys" in self.frames:
-                print("Frames: {self.frames}")
+            print("\nOrcamentos tab selected")
+            if "frame_vehicle_data_entries" in self.frames:
+                
                 self.frames["frame_vehicle_data_entrys"].destroy()
-                self.frames["frame_client_data_entrys"].destroy()
+                self.frames["frame_choose_body_part"].destroy()
+                self.frames["frame_client_data_entries"].destroy()
+                self.frames["frame_payment_data_entries"].destroy()                        
+                super().forget()
+                del self.frames['frame_vehicle_data_entrys']
+                del self.frames['frame_choose_body_part']
+                del self.frames['frame_client_data_entries']
+                del self.frames['frame_payment_data_entries']
+
 
 
 

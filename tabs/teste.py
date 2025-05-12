@@ -1,28 +1,24 @@
+
 import customtkinter as ctk
+
 
 class TelaConsultaOrcamentos(ctk.CTkFrame):
     def __init__(self, master, frames):
         super().__init__(master)
+        self.master = master
         self.frames = frames
+        
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         
         self.mostrar_tela_consultar_orcamentos()
 
     def mostrar_tela_consultar_orcamentos(self):
-        
+              
 
-        # Mantém apenas o frame de botões
-        for nome, frame in list(self.frames.items()):
-            if nome != "frame_botoes_acao_orcamentos":
-                frame.destroy()
-        self.frames = {"frame_botoes_acao_orcamentos": self.frames.get("frame_botoes_acao_orcamentos")}
-
-        print("frames na TESTE:", self.frames.keys())
         # Cria novo frame de consulta
         frame_consulta = ctk.CTkFrame(master=self, fg_color="gray20")
         frame_consulta.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        self.frames["frame_consulta_orcamentos"] = frame_consulta
 
         # Título
         ctk.CTkLabel(

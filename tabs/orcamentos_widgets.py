@@ -1,29 +1,103 @@
-from math import e
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 from tabs.teste import TelaConsultaOrcamentos
 
 
+class SlidePanel(ctk.CTkFrame):
+    def __init__(self, parent, width=0.2):
+        super().__init__(master=parent)
+        self.width = width
+        self.hidden_pos = -self.width
+        self.visible_pos = 0.0
+        self.pos = self.hidden_pos
+        self.in_start_pos = True  # Está escondido inicialmente
+        self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+        #self.configure(fg_color="gray33")
+
+    def animate(self):
+        if self.in_start_pos:
+            self.animate_forward()
+        else:
+            self.animate_backwards()
+
+    def animate_forward(self):
+        if self.pos < self.visible_pos:
+            self.pos += 0.01
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(10, self.animate_forward)
+        else:
+            self.pos = self.visible_pos
+            self.in_start_pos = False
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+
+    def animate_backwards(self):
+        if self.pos > self.hidden_pos:
+            self.pos -= 0.01
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+            self.after(10, self.animate_backwards)
+        else:
+            self.pos = self.hidden_pos
+            self.in_start_pos = True
+            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
+                
+# Global variable to control the button position
 
 class OrcamentosWidgets(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.frames = {}
+        self.master = master
         self.checkbox_car_parts_vars = {}
         self.entry_carinfo_vars = {}
         self.entry_novo_cliente_var = {}
         self.entry_payments_var = {}
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-        self.frame_action_buttons_orcamento()
+        self.create_sidebar()
+        
+        
+    def move_btn(self,CtkButton):
+        global button_x
+        button_x += 0.001
+        CtkButton.place(relx = button_x, rely = 0.5, anchor = 'center')
+        
+        if button_x < 0.9:
+            
+            self.after(10, self.move_btn)
+
+        # configure 
+        # colors = ['red', 'yellow', 'pink', 'green', 'blue', 'black', 'white']
+        # color = choice(colors)
+        # button.configure(fg_color = color)
+
+    def infinite_print(self):
+        global button_x
+        button_x += 0.5
+        if button_x < 10:
+            print('infinite')
+            print(button_x)
+            self.after(100, self.infinite_print)
+
+
+
+    def create_sidebar(self):
+        self.animated_panel = SlidePanel(self.master, width=0.1)
+        button_x = 0.5
+        toggle_button = ctk.CTkButton(self, text = 'Menu', width=300,command = self.animated_panel.animate)
+        #toggle_button.place(x=10, y=10)
+        toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+        #self.frames["frame_botoes_acao_orcamentos"] = animated_panel
+        self.frame_action_buttons_orcamento(self.animated_panel)
+        
+        
         
 
-
-
     # Criar a seção de botões de ação para o orçamento
-    def frame_action_buttons_orcamento(self):
-        self.frames["frame_botoes_acao_orcamentos"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
+    def frame_action_buttons_orcamento(self,parent):
+
+        self.frames["frame_botoes_acao_orcamentos"] = ctk.CTkFrame(master=parent, fg_color="gray33")
         self.frames["frame_botoes_acao_orcamentos"].grid(row=0, column=0, padx=5, pady=5, sticky="new")
+        self.frames["frame_botoes_acao_orcamentos"].grid_columnconfigure(0, weight=1)
 
         botoes = [
             ("Criar Orçamento",self.create_widgets_orcamento),
@@ -32,31 +106,39 @@ class OrcamentosWidgets(ctk.CTkFrame):
             ("Excluir Orçamento",lambda: print("Excluir Orçamento Clicked")),
             
         ]
-        
-        
         for i, (texto,funcao) in enumerate(botoes):
-            ctk.CTkButton(master=self.frames["frame_botoes_acao_orcamentos"], text=texto, width=120, anchor='w',command=funcao)\
-                .grid(row=i, column=0, padx=5, pady=5, sticky="ew")
+            button = ctk.CTkButton(master=self.frames["frame_botoes_acao_orcamentos"], text=texto, width=100, anchor='center',command=funcao)
+            button.grid(row=i, column=0, padx=5, pady=5, sticky="ew")
+            
+
 
     def create_widgets_consultar_orcamento(self):
-        self.widgets_orcamento = TelaConsultaOrcamentos(master=self,frames=self.frames)
-        self.widgets_orcamento.grid(row=0, column=1, sticky="nsew")
+        self.animated_panel.animate()
+        self.limpar_frames_dinamicos()
+        self.btn_salvar_orcamento.destroy()
+        self.frames["frame_consult_budgets"] = TelaConsultaOrcamentos(master=self,frames=self.frames)
+        self.frames["frame_consult_budgets"].grid(row=0, column=1, sticky="nsew")
+        print("Frames existentes Consultar orcamento:", self.frames.keys())
 
     # Métodos para criar um orçamento
     def create_widgets_orcamento(self):
-        print("Frames existentes CREATE WIDGETS Criar Orcamento:", self.frames.keys()) 
+        #recua o slide panel e limpa os frames dinâmicos
+        self.animated_panel.animate()
         self.limpar_frames_dinamicos()
-        #self.forget_specific_frames()
+        
         
         # Implementar a lógica para criar um orçamento
         self.frame_vehicle_data_entries()
         self.frame_client_data_entries()
         self.frame_payment_data_entries()
-        ctk.CTkButton(master=self, text="Salvar Orçamento", width=200,height=50, anchor='center',command=self.get_all_entrys)\
-            .grid(row=1, column=1, padx=5, pady=5, sticky="ew",columnspan=3,rowspan=2)
+        self.btn_salvar_orcamento = ctk.CTkButton(master=self, text="Salvar Orçamento", width=200,height=50, anchor='center',command=self.get_all_entrys)
+        self.btn_salvar_orcamento.grid(row=1, column=1, padx=5, pady=5, sticky="ew",columnspan=3,rowspan=2)
+        print("Frames existentes Criar Orçamento:", self.frames.keys())
 
     # Criar o Frame para as entradas de dados do veículo e chamar o método de widgets
     def frame_vehicle_data_entries(self):
+        #self.rowconfigure(1, weight=1)
+        #self.columnconfigure(0, weight=1)
         self.frames["frame_vehicle_data_entries"] = ctk.CTkFrame(master=self, width=300, height=300, fg_color="gray22")
         self.frames["frame_vehicle_data_entries"].grid(row=0, column=1, padx=5, pady=5, sticky="nwe")
         self.widgets_vehicle_orcamento()
@@ -366,11 +448,11 @@ class OrcamentosWidgets(ctk.CTkFrame):
         
     def limpar_frames_dinamicos(self):
         print(f"\n\n*********Limpeza de framedinamicos*********")
+        print(f"Frames antes da limpeza: {self.frames.keys()}")
         for nome, frame in self.frames.items():
-            
-            print(f"\n\n\nFrames existentes: {self.frames.keys()}")
             if nome != "frame_botoes_acao_orcamentos":
                 print(f"Destruindo frame: {nome}\n")  
                 frame.destroy()
                 super().forget()
         self.frames = {"frame_botoes_acao_orcamentos": self.frames["frame_botoes_acao_orcamentos"]}
+        print(f"Frames após limpeza: {self.frames.keys()}")
